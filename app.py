@@ -126,17 +126,20 @@ health_disease_data = {
 
 # Streamlit app
 st.title("HealthBuddy Vitamin Deficiency Tracker - Praveen Yaganti")
-st.write("Enter food names to analyze possible vitamin deficiencies.")
+st.write("Enter up to 5 food names to analyze possible vitamin deficiencies.")
 
-# User input
-food_input = st.text_input("Enter food names separated by commas:")
+# User input for 5 food items
+food_input_1 = st.text_input("Enter food 1:")
+food_input_2 = st.text_input("Enter food 2:")
+food_input_3 = st.text_input("Enter food 3:")
+food_input_4 = st.text_input("Enter food 4:")
+food_input_5 = st.text_input("Enter food 5:")
 
-if food_input.strip() == "":
-    st.write("Please enter some food names to analyze.")
-else:
-    # Preprocess the food input
-    food_names = [preprocess_text(food.strip()) for food in food_input.split(',')]
-    
+# Collect all food items into a list
+food_inputs = [food_input_1, food_input_2, food_input_3, food_input_4, food_input_5]
+food_names = [preprocess_text(food.strip()) for food in food_inputs if food.strip()]
+
+if food_names:
     # Predict deficiencies using the model
     with st.spinner('Analyzing food...'):
         try:
@@ -160,18 +163,16 @@ else:
     if deficiency_counts:
         st.write("### Deficiencies Detected:")
         for vitamin, count in deficiency_counts.items():
-            # Display in the requested format
-            st.write(f"**{vitamin}: {count} occurrences**")
-            st.write(f"  - **Diseases**: {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
-            st.write(f"  - **Foods to Eat**: {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
-            st.write(f"  - **Precautions**: {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
+            # Use card style for each deficiency
+            st.markdown(f"""
+            <div style="background-color:#f7f7f7; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                <h3 style="color:#3c8c8c;">**{vitamin} Deficiency**: {count} occurrence(s)</h3>
+                <h4><strong>Diseases:</strong> {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}</h4>
+                <h4><strong>Foods to Eat:</strong> {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}</h4>
+                <h4><strong>Precautions:</strong> {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}</h4>
+            </div>
+            """, unsafe_allow_html=True)
     else:
         st.write("No deficiencies detected.")
-
-    # If no valid predictions, show only Vitamin A deficiency
-    if not deficiency_counts:
-        st.write("Since the food items are not recognized, defaulting to Vitamin A deficiency:")
-        st.write("### Vitamin A Deficiency")
-        st.write(f"  - **Diseases**: {', '.join(health_disease_data['Vitamin_A']['Diseases'])}")
-        st.write(f"  - **Foods to Eat**: {', '.join(health_disease_data['Vitamin_A']['Foods to Eat'])}")
-        st.write(f"  - **Precautions**: {', '.join(health_disease_data['Vitamin_A']['Precautions'])}")
+else:
+    st.write("Please enter some food names to analyze.")
