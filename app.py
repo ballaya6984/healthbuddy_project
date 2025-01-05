@@ -39,11 +39,7 @@ health_disease_data = {
             "Night blindness", "Dry skin", "Xerophthalmia", "Immune system deficiency", "Poor vision"
         ],
         "Precautions": [
-            "Maintain good hygiene",
-            "Avoid smoking",
-            "Use vitamin-enriched skin products",
-            "Get regular eye exams",
-            "Avoid excessive alcohol consumption"
+            "Maintain good hygiene", "Avoid smoking", "Use vitamin-enriched skin products", "Get regular eye exams", "Avoid excessive alcohol consumption"
         ],
         "Foods to Eat": [
             "Carrots", "Sweet potatoes", "Spinach", "Apricots", "Liver", "Kale", "Red bell peppers", "Butternut squash"
@@ -54,11 +50,7 @@ health_disease_data = {
             "Anemia", "Fatigue", "Nerve damage", "Pernicious anemia", "Memory problems", "Pale skin"
         ],
         "Precautions": [
-            "Regular check-ups",
-            "Avoid alcohol",
-            "Consider supplements if vegetarian",
-            "Monitor levels of folate and iron",
-            "Get tested if pregnant or elderly"
+            "Regular check-ups", "Avoid alcohol", "Consider supplements if vegetarian", "Monitor levels of folate and iron", "Get tested if pregnant or elderly"
         ],
         "Foods to Eat": [
             "Meat", "Fish", "Eggs", "Dairy products", "Fortified cereals", "Fortified nutritional yeast", "Clams", "Liver"
@@ -69,11 +61,7 @@ health_disease_data = {
             "Scurvy", "Bleeding gums", "Weakened immunity", "Frequent infections", "Dry skin", "Joint pain"
         ],
         "Precautions": [
-            "Avoid smoking",
-            "Minimize stress",
-            "Eat fresh fruits and vegetables",
-            "Avoid exposure to cold weather",
-            "Consider vitamin C supplements during flu season"
+            "Avoid smoking", "Minimize stress", "Eat fresh fruits and vegetables", "Avoid exposure to cold weather", "Consider vitamin C supplements during flu season"
         ],
         "Foods to Eat": [
             "Oranges", "Strawberries", "Bell peppers", "Broccoli", "Kiwi", "Brussels sprouts", "Cauliflower", "Tomatoes", "Cantaloupe"
@@ -84,11 +72,7 @@ health_disease_data = {
             "Rickets", "Bone pain", "Muscle weakness", "Osteomalacia", "Osteoporosis", "Fatigue", "Increased risk of infections"
         ],
         "Precautions": [
-            "Get sunlight exposure",
-            "Maintain calcium levels",
-            "Take supplements if needed",
-            "Monitor vitamin D levels during winter months",
-            "Engage in weight-bearing exercises"
+            "Get sunlight exposure", "Maintain calcium levels", "Take supplements if needed", "Monitor vitamin D levels during winter months", "Engage in weight-bearing exercises"
         ],
         "Foods to Eat": [
             "Fatty fish", "Fortified milk", "Eggs", "Mushrooms", "Fortified orange juice", "Cod liver oil", "Cheese", "Beef liver"
@@ -99,10 +83,7 @@ health_disease_data = {
             "Nerve damage", "Muscle weakness", "Vision issues", "Peripheral neuropathy", "Impaired immune function"
         ],
         "Precautions": [
-            "Avoid excessive fat restriction",
-            "Include antioxidants in diet",
-            "Consume healthy fats like nuts and seeds",
-            "Consider supplementing if pregnant or lactating"
+            "Avoid excessive fat restriction", "Include antioxidants in diet", "Consume healthy fats like nuts and seeds", "Consider supplementing if pregnant or lactating"
         ],
         "Foods to Eat": [
             "Nuts", "Seeds", "Spinach", "Sunflower oil", "Avocados", "Almonds", "Peanut butter", "Olive oil", "Pumpkin seeds"
@@ -113,10 +94,7 @@ health_disease_data = {
             "Bleeding disorders", "Weak bones", "Excessive bruising", "Impaired wound healing", "Osteoporosis", "Hemorrhaging"
         ],
         "Precautions": [
-            "Avoid prolonged use of antibiotics",
-            "Ensure a balanced diet",
-            "Take vitamin K2 supplements if prescribed",
-            "Be cautious with anticoagulant medications"
+            "Avoid prolonged use of antibiotics", "Ensure a balanced diet", "Take vitamin K2 supplements if prescribed", "Be cautious with anticoagulant medications"
         ],
         "Foods to Eat": [
             "Leafy greens", "Broccoli", "Brussels sprouts", "Parsley", "Fish oil", "Kale", "Swiss chard", "Green beans", "Cabbage"
@@ -158,15 +136,12 @@ if st.button("Analyze"):
         if deficiency_counts:
             st.write("### Deficiencies Detected:")
             for vitamin, count in deficiency_counts.items():
-                # Display details with a card style
-                st.markdown(f"""
-                <div style="background-color:#f7f7f7; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                    <h3 style="color:#3c8c8c;">**{vitamin} Deficiency**: {count} occurrence(s)</h3>
-                    <h4><strong>Diseases:</strong> {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}</h4>
-                    <h4><strong>Foods to Eat:</strong> {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}</h4>
-                    <h4><strong>Precautions:</strong> {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}</h4>
-                </div>
-                """, unsafe_allow_html=True)
+                # Display the results with simplified output
+                st.markdown(f"**{vitamin} Deficiency**: {count} occurrence(s)")
+                st.markdown(f"**Diseases:** {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
+                st.markdown(f"**Foods to Eat:** {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
+                st.markdown(f"**Precautions:** {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
+                st.markdown("---")
         else:
             st.write("No deficiencies detected.")
     else:
