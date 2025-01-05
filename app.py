@@ -106,16 +106,19 @@ health_disease_data = {
 st.title("HealthBuddy Vitamin Deficiency Tracker - Praveen Yaganti")
 st.write("Enter food names for each day (comma-separated) to analyze possible vitamin deficiencies.")
 
-# Function to process and analyze food input for each day
-def analyze_day(food_input, day_number):
+# User input: Enter all food items for all days
+food_input = st.text_area("Enter food names for Day 1 to Day 5 (comma-separated):")
+
+# Function to analyze food input for all days
+if st.button("Analyze All Days"):
     food_names = [preprocess_text(food.strip()) for food in food_input.split(',') if food.strip()]
     
     if food_names:
-        with st.spinner(f'Analyzing Day {day_number} foods...'):
+        with st.spinner('Analyzing all food items...'):
             try:
                 predictions = model.predict(food_names)
             except:
-                st.write(f"Error: The food items on Day {day_number} may not be recognized by the model. Defaulting to Vitamin A deficiency.")
+                st.write("Error: The food items may not be recognized by the model. Defaulting to Vitamin A deficiency.")
                 predictions = [[0.0] * len(target_names)] * len(food_names)  # Dummy prediction
 
         deficiencies_for_day = set()  # Use a set to keep unique deficiencies
@@ -129,21 +132,15 @@ def analyze_day(food_input, day_number):
             deficiencies_for_day.update(deficiencies)  # Add deficiencies to the set
 
         if deficiencies_for_day:
-            st.write(f"### Deficiencies Detected for Day {day_number}:")
+            st.write("### Deficiencies Detected for All Days:")
             for vitamin in deficiencies_for_day:
-                # Display the results for each day with simplified output
+                # Display the results for each deficiency
                 st.markdown(f"**{vitamin} Deficiency**")
                 st.markdown(f"**Diseases:** {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
                 st.markdown(f"**Foods to Eat:** {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
                 st.markdown(f"**Precautions:** {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
                 st.markdown("---")
         else:
-            st.write(f"No deficiencies detected on Day {day_number}.")
+            st.write("No deficiencies detected for the entered food items.")
     else:
-        st.write(f"Please enter some food names for Day {day_number}.")
-
-# Day-specific inputs
-for day in range(1, 6):
-    food_input = st.text_area(f"Enter food names for Day {day} (comma-separated):")
-    if st.button(f"Analyze Day {day}"):
-        analyze_day(food_input, day)
+        st.write("Please enter some food names to analyze.")
