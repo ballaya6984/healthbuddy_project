@@ -131,11 +131,22 @@ st.write("Enter food names to analyze possible vitamin deficiencies.")
 # User input
 food_input = st.text_input("Enter food names separated by commas:")
 
-if food_input:
+if food_input.strip() == "":
+    st.write("Please enter some food names to analyze.")
+else:
+    # Preprocess the food input
     food_names = [preprocess_text(food.strip()) for food in food_input.split(',')]
-    predictions = model.predict(food_names)
+    
+    # Predict deficiencies using the model
+    with st.spinner('Analyzing food...'):
+        try:
+            predictions = model.predict(food_names)
+        except:
+            st.write("Error: The food items may not be recognized by the model. Defaulting to Vitamin A deficiency.")
+            predictions = [[0.0] * len(target_names)] * len(food_names)  # Dummy prediction
 
     deficiencies_for_day = []
+    
     for i, food in enumerate(food_names):
         food_predictions = dict(zip(target_names, predictions[i]))
         deficiencies = [
@@ -145,13 +156,26 @@ if food_input:
         deficiencies_for_day.extend(deficiencies)
 
     deficiency_counts = Counter(deficiencies_for_day)
-    
+
     if deficiency_counts:
         st.write("### Deficiencies Detected:")
         for vitamin, count in deficiency_counts.items():
             st.write(f"**{vitamin}**: {count} occurrences")
+
+            # Check if vitamin data exists
             if vitamin in health_disease_data:
-                st.write(f"  - Diseases: {', '.join(health_disease_data[vitamin]['Diseases'])}")
-                st.write(f"  - Foods to Eat: {', '.join(health_disease_data[vitamin]['Foods'])}")
+                st.write(f"  - Diseases: {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
+                st.write(f"  - Foods to Eat: {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
+                st.write(f"  - Precautions: {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
+            else:
+                st.write(f"  - No information available for {vitamin}")
     else:
         st.write("No deficiencies detected.")
+
+    # If no valid predictions, show only Vitamin A deficiency
+    if not deficiency_counts:
+        st.write("Since the food items are not recognized, defaulting to Vitamin A deficiency:")
+        st.write("### Vitamin A Deficiency")
+        st.write(f"  - Diseases: {', '.join(health_disease_data['Vitamin_A']['Diseases'])}")
+        st.write(f"  - Foods to Eat: {', '.join(health_disease_data['Vitamin_A']['Foods to Eat'])}")
+        st.write(f"  - Precautions: {', '.join(health_disease_data['Vitamin_A']['Precautions'])}")
