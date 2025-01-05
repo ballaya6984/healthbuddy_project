@@ -107,11 +107,11 @@ st.title("HealthBuddy Vitamin Deficiency Tracker - Praveen Yaganti")
 st.write("Enter food names for each day (comma-separated) to analyze possible vitamin deficiencies.")
 
 # Input fields for each day
-day_1_input = st.text_area("Enter food names for Day 1 (comma-separated):")
-day_2_input = st.text_area("Enter food names for Day 2 (comma-separated):")
-day_3_input = st.text_area("Enter food names for Day 3 (comma-separated):")
-day_4_input = st.text_area("Enter food names for Day 4 (comma-separated):")
-day_5_input = st.text_area("Enter food names for Day 5 (comma-separated):")
+day_1_input = st.text_area("Enter food names for Day 1 (comma-separated):", key="day_1_input", height=100)
+day_2_input = st.text_area("Enter food names for Day 2 (comma-separated):", key="day_2_input", height=100)
+day_3_input = st.text_area("Enter food names for Day 3 (comma-separated):", key="day_3_input", height=100)
+day_4_input = st.text_area("Enter food names for Day 4 (comma-separated):", key="day_4_input", height=100)
+day_5_input = st.text_area("Enter food names for Day 5 (comma-separated):", key="day_5_input", height=100)
 
 # Function to analyze food input for a specific day
 def analyze_all_days(day_1_input, day_2_input, day_3_input, day_4_input, day_5_input):
@@ -145,8 +145,8 @@ def analyze_all_days(day_1_input, day_2_input, day_3_input, day_4_input, day_5_i
 
     # Display results for the top 2 deficiencies
     if most_common_deficiencies:
-        for vitamin, count in most_common_deficiencies:
-            st.write(f"### {vitamin} Deficiency ({count} days)")
+        for vitamin, _ in most_common_deficiencies:
+            st.write(f"### {vitamin} Deficiency")
             st.markdown(f"**Diseases:** {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
             st.markdown(f"**Foods to Eat:** {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
             st.markdown(f"**Precautions:** {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
@@ -154,6 +154,17 @@ def analyze_all_days(day_1_input, day_2_input, day_3_input, day_4_input, day_5_i
     else:
         st.write("No deficiencies detected across the 5 days.")
 
-# Button to analyze all 5 days
+# Button to analyze all 5 days with smaller button size using custom CSS
+button_style = """
+    <style>
+        .stButton button {
+            font-size: 14px;
+            padding: 10px 20px;
+            margin: 10px 0;
+        }
+    </style>
+"""
+st.markdown(button_style, unsafe_allow_html=True)
+
 if st.button("Analyze All 5 Days"):
     analyze_all_days(day_1_input, day_2_input, day_3_input, day_4_input, day_5_input)
