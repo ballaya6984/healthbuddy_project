@@ -160,15 +160,11 @@ else:
     if deficiency_counts:
         st.write("### Deficiencies Detected:")
         for vitamin, count in deficiency_counts.items():
-            st.write(f"**{vitamin}**: {count} occurrences")
-
-            # Check if vitamin data exists
-            if vitamin in health_disease_data:
-                st.write(f"  - Diseases: {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
-                st.write(f"  - Foods to Eat: {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
-                st.write(f"  - Precautions: {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
-            else:
-                st.write(f"  - No information available for {vitamin}")
+            # Display in the requested format
+            st.write(f"**{vitamin}: {count} occurrences**")
+            st.write(f"  - **Diseases**: {', '.join(health_disease_data[vitamin].get('Diseases', ['No data available']))}")
+            st.write(f"  - **Foods to Eat**: {', '.join(health_disease_data[vitamin].get('Foods to Eat', ['No data available']))}")
+            st.write(f"  - **Precautions**: {', '.join(health_disease_data[vitamin].get('Precautions', ['No data available']))}")
     else:
         st.write("No deficiencies detected.")
 
@@ -176,6 +172,6 @@ else:
     if not deficiency_counts:
         st.write("Since the food items are not recognized, defaulting to Vitamin A deficiency:")
         st.write("### Vitamin A Deficiency")
-        st.write(f"  - Diseases: {', '.join(health_disease_data['Vitamin_A']['Diseases'])}")
-        st.write(f"  - Foods to Eat: {', '.join(health_disease_data['Vitamin_A']['Foods to Eat'])}")
-        st.write(f"  - Precautions: {', '.join(health_disease_data['Vitamin_A']['Precautions'])}")
+        st.write(f"  - **Diseases**: {', '.join(health_disease_data['Vitamin_A']['Diseases'])}")
+        st.write(f"  - **Foods to Eat**: {', '.join(health_disease_data['Vitamin_A']['Foods to Eat'])}")
+        st.write(f"  - **Precautions**: {', '.join(health_disease_data['Vitamin_A']['Precautions'])}")
