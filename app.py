@@ -35,11 +35,71 @@ deficiency_thresholds = {
 # Define health and disease data
 health_disease_data = {
     "Vitamin_A": {
-        "Diseases": ["Night blindness", "Dry skin", "Xerophthalmia", "Immune system deficiency", "Poor vision"],
-        "Precautions": ["Maintain good hygiene", "Avoid smoking", "Use vitamin-enriched skin products", "Get regular eye exams", "Avoid excessive alcohol consumption"],
-        "Foods to Eat": ["Carrots", "Sweet potatoes", "Spinach", "Apricots", "Liver", "Kale", "Red bell peppers", "Butternut squash"]
+        "Diseases": [
+            "Night blindness", "Dry skin", "Xerophthalmia", "Immune system deficiency", "Poor vision"
+        ],
+        "Precautions": [
+            "Maintain good hygiene", "Avoid smoking", "Use vitamin-enriched skin products", "Get regular eye exams", "Avoid excessive alcohol consumption"
+        ],
+        "Foods to Eat": [
+            "Carrots", "Sweet potatoes", "Spinach", "Apricots", "Liver", "Kale", "Red bell peppers", "Butternut squash"
+        ]
     },
-    # (similar data for other vitamins omitted for brevity)
+    "Vitamin_B12": {
+        "Diseases": [
+            "Anemia", "Fatigue", "Nerve damage", "Pernicious anemia", "Memory problems", "Pale skin"
+        ],
+        "Precautions": [
+            "Regular check-ups", "Avoid alcohol", "Consider supplements if vegetarian", "Monitor levels of folate and iron", "Get tested if pregnant or elderly"
+        ],
+        "Foods to Eat": [
+            "Meat", "Fish", "Eggs", "Dairy products", "Fortified cereals", "Fortified nutritional yeast", "Clams", "Liver"
+        ]
+    },
+    "Vitamin_C": {
+        "Diseases": [
+            "Scurvy", "Bleeding gums", "Weakened immunity", "Frequent infections", "Dry skin", "Joint pain"
+        ],
+        "Precautions": [
+            "Avoid smoking", "Minimize stress", "Eat fresh fruits and vegetables", "Avoid exposure to cold weather", "Consider vitamin C supplements during flu season"
+        ],
+        "Foods to Eat": [
+            "Oranges", "Strawberries", "Bell peppers", "Broccoli", "Kiwi", "Brussels sprouts", "Cauliflower", "Tomatoes", "Cantaloupe"
+        ]
+    },
+    "Vitamin_D": {
+        "Diseases": [
+            "Rickets", "Bone pain", "Muscle weakness", "Osteomalacia", "Osteoporosis", "Fatigue", "Increased risk of infections"
+        ],
+        "Precautions": [
+            "Get sunlight exposure", "Maintain calcium levels", "Take supplements if needed", "Monitor vitamin D levels during winter months", "Engage in weight-bearing exercises"
+        ],
+        "Foods to Eat": [
+            "Fatty fish", "Fortified milk", "Eggs", "Mushrooms", "Fortified orange juice", "Cod liver oil", "Cheese", "Beef liver"
+        ]
+    },
+    "Vitamin_E": {
+        "Diseases": [
+            "Nerve damage", "Muscle weakness", "Vision issues", "Peripheral neuropathy", "Impaired immune function"
+        ],
+        "Precautions": [
+            "Avoid excessive fat restriction", "Include antioxidants in diet", "Consume healthy fats like nuts and seeds", "Consider supplementing if pregnant or lactating"
+        ],
+        "Foods to Eat": [
+            "Nuts", "Seeds", "Spinach", "Sunflower oil", "Avocados", "Almonds", "Peanut butter", "Olive oil", "Pumpkin seeds"
+        ]
+    },
+    "Vitamin_K": {
+        "Diseases": [
+            "Bleeding disorders", "Weak bones", "Excessive bruising", "Impaired wound healing", "Osteoporosis", "Hemorrhaging"
+        ],
+        "Precautions": [
+            "Avoid prolonged use of antibiotics", "Ensure a balanced diet", "Take vitamin K2 supplements if prescribed", "Be cautious with anticoagulant medications"
+        ],
+        "Foods to Eat": [
+            "Leafy greens", "Broccoli", "Brussels sprouts", "Parsley", "Fish oil", "Kale", "Swiss chard", "Green beans", "Cabbage"
+        ]
+    },
 }
 
 # Analyze deficiencies
@@ -72,7 +132,7 @@ if "day_inputs" not in st.session_state:
     st.session_state.day_inputs = [""] * 5
 
 if st.session_state.page == 1:
-    st.title("Welcome to HealthBuddy")
+    st.title("Welcome to HealthBuddy by Praveen ")
     st.write("Please enter your details to continue:")
     st.session_state.name = st.text_input("Enter your name:")
     st.session_state.age = st.number_input("Enter your age:", min_value=0, max_value=120, step=1)
