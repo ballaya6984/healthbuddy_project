@@ -39,21 +39,47 @@ health_disease_data = {
         "Precautions": ["Maintain good hygiene", "Avoid smoking"],
         "Foods to Eat": ["Carrots", "Sweet potatoes", "Spinach"]
     },
-    # Add other vitamins as per the original data...
+    # Add other vitamins as needed
 }
 
-# Streamlit app
+# Streamlit app configuration
 st.set_page_config(page_title="HealthBuddy", layout="centered")
 
-# Mobile-friendly CSS
+# Mobile-friendly CSS for card-based UI
 st.markdown("""
     <style>
-    .stApp {
+    body {
         background-color: #f8f9fa;
         font-family: Arial, sans-serif;
     }
-    .stTextInput, .stTextArea {
-        font-size: 14px;
+    .stApp {
+        padding: 0;
+        margin: 0;
+    }
+    .header {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .header h1 {
+        color: #007bff;
+        font-size: 36px;
+    }
+    .header h3 {
+        color: #333;
+        font-size: 18px;
+        margin-top: -10px;
+    }
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 10px 0;
+    }
+    .card h4 {
+        color: #007bff;
+        margin-bottom: 10px;
     }
     .stButton button {
         font-size: 16px;
@@ -62,20 +88,27 @@ st.markdown("""
         background-color: #007bff;
         color: white;
         border-radius: 5px;
+        border: none;
+    }
+    .stTextInput input {
+        font-size: 14px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 100%;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Title
-st.title("HealthBuddy")
-st.subheader("Vitamin Deficiency Tracker")
-st.write("Track your daily nutrient intake and get recommendations.")
+# App Header
+st.markdown("<div class='header'><h1>HealthBuddy</h1><h3>Vitamin Deficiency Tracker</h3></div>", unsafe_allow_html=True)
 
-# Collapsible food input
-with st.expander("Enter your food intake for each day"):
-    day_inputs = []
-    for i in range(1, 6):
-        day_inputs.append(st.text_input(f"Day {i} Foods (comma-separated):", key=f"day_{i}_input"))
+# Input cards for each day
+st.markdown("<div class='card'><h4>Enter Food Intake</h4>", unsafe_allow_html=True)
+day_inputs = []
+for i in range(1, 6):
+    day_inputs.append(st.text_input(f"Day {i} Foods (comma-separated):", key=f"day_{i}_input"))
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Analysis function
 def analyze_all_days(day_inputs):
@@ -96,16 +129,18 @@ def analyze_all_days(day_inputs):
                 deficiencies_count.update(deficiencies)
     
     # Display results
+    st.markdown("<div class='card'><h4>Results</h4>", unsafe_allow_html=True)
     most_common_deficiencies = deficiencies_count.most_common(2)
     if most_common_deficiencies:
         for vitamin, _ in most_common_deficiencies:
-            st.write(f"### {vitamin} Deficiency")
-            st.markdown(f"**Diseases:** {', '.join(health_disease_data[vitamin]['Diseases'])}")
-            st.markdown(f"**Foods to Eat:** {', '.join(health_disease_data[vitamin]['Foods to Eat'])}")
-            st.markdown(f"**Precautions:** {', '.join(health_disease_data[vitamin]['Precautions'])}")
-            st.markdown("---")
+            st.markdown(f"<strong>{vitamin} Deficiency</strong>", unsafe_allow_html=True)
+            st.markdown(f"<strong>Diseases:</strong> {', '.join(health_disease_data[vitamin]['Diseases'])}", unsafe_allow_html=True)
+            st.markdown(f"<strong>Foods to Eat:</strong> {', '.join(health_disease_data[vitamin]['Foods to Eat'])}", unsafe_allow_html=True)
+            st.markdown(f"<strong>Precautions:</strong> {', '.join(health_disease_data[vitamin]['Precautions'])}", unsafe_allow_html=True)
+            st.markdown("<hr>", unsafe_allow_html=True)
     else:
-        st.write("No deficiencies detected.")
+        st.markdown("No deficiencies detected.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Analyze button
 if st.button("Analyze All Days"):
