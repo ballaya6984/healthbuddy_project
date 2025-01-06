@@ -32,14 +32,74 @@ deficiency_thresholds = {
     'Vitamin_K': 2.0,
 }
 
-# Define health and disease data
+# Define health and disease data (updated as per your request)
 health_disease_data = {
     "Vitamin_A": {
-        "Diseases": ["Night blindness", "Dry skin", "Xerophthalmia"],
-        "Precautions": ["Maintain good hygiene", "Avoid smoking"],
-        "Foods to Eat": ["Carrots", "Sweet potatoes", "Spinach"]
+        "Diseases": [
+            "Night blindness", "Dry skin", "Xerophthalmia", "Immune system deficiency", "Poor vision"
+        ],
+        "Precautions": [
+            "Maintain good hygiene", "Avoid smoking", "Use vitamin-enriched skin products", "Get regular eye exams", "Avoid excessive alcohol consumption"
+        ],
+        "Foods to Eat": [
+            "Carrots", "Sweet potatoes", "Spinach", "Apricots", "Liver", "Kale", "Red bell peppers", "Butternut squash"
+        ]
     },
-    # Add other vitamins as needed
+    "Vitamin_B12": {
+        "Diseases": [
+            "Anemia", "Fatigue", "Nerve damage", "Pernicious anemia", "Memory problems", "Pale skin"
+        ],
+        "Precautions": [
+            "Regular check-ups", "Avoid alcohol", "Consider supplements if vegetarian", "Monitor levels of folate and iron", "Get tested if pregnant or elderly"
+        ],
+        "Foods to Eat": [
+            "Meat", "Fish", "Eggs", "Dairy products", "Fortified cereals", "Fortified nutritional yeast", "Clams", "Liver"
+        ]
+    },
+    "Vitamin_C": {
+        "Diseases": [
+            "Scurvy", "Bleeding gums", "Weakened immunity", "Frequent infections", "Dry skin", "Joint pain"
+        ],
+        "Precautions": [
+            "Avoid smoking", "Minimize stress", "Eat fresh fruits and vegetables", "Avoid exposure to cold weather", "Consider vitamin C supplements during flu season"
+        ],
+        "Foods to Eat": [
+            "Oranges", "Strawberries", "Bell peppers", "Broccoli", "Kiwi", "Brussels sprouts", "Cauliflower", "Tomatoes", "Cantaloupe"
+        ]
+    },
+    "Vitamin_D": {
+        "Diseases": [
+            "Rickets", "Bone pain", "Muscle weakness", "Osteomalacia", "Osteoporosis", "Fatigue", "Increased risk of infections"
+        ],
+        "Precautions": [
+            "Get sunlight exposure", "Maintain calcium levels", "Take supplements if needed", "Monitor vitamin D levels during winter months", "Engage in weight-bearing exercises"
+        ],
+        "Foods to Eat": [
+            "Fatty fish", "Fortified milk", "Eggs", "Mushrooms", "Fortified orange juice", "Cod liver oil", "Cheese", "Beef liver"
+        ]
+    },
+    "Vitamin_E": {
+        "Diseases": [
+            "Nerve damage", "Muscle weakness", "Vision issues", "Peripheral neuropathy", "Impaired immune function"
+        ],
+        "Precautions": [
+            "Avoid excessive fat restriction", "Include antioxidants in diet", "Consume healthy fats like nuts and seeds", "Consider supplementing if pregnant or lactating"
+        ],
+        "Foods to Eat": [
+            "Nuts", "Seeds", "Spinach", "Sunflower oil", "Avocados", "Almonds", "Peanut butter", "Olive oil", "Pumpkin seeds"
+        ]
+    },
+    "Vitamin_K": {
+        "Diseases": [
+            "Bleeding disorders", "Weak bones", "Excessive bruising", "Impaired wound healing", "Osteoporosis", "Hemorrhaging"
+        ],
+        "Precautions": [
+            "Avoid prolonged use of antibiotics", "Ensure a balanced diet", "Take vitamin K2 supplements if prescribed", "Be cautious with anticoagulant medications"
+        ],
+        "Foods to Eat": [
+            "Leafy greens", "Broccoli", "Brussels sprouts", "Parsley", "Fish oil", "Kale", "Swiss chard", "Green beans", "Cabbage"
+        ]
+    },
 }
 
 # Initialize session state for page navigation and data storage
@@ -65,7 +125,7 @@ st.markdown(
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
     h1, h2, h3 {
-        color: #4CAF50 !important;
+        color: #2e8b57 !important; /* Navy Green color */
     }
     .stButton>button {
         background-color: #000080; /* Navy Blue */
@@ -111,14 +171,9 @@ elif st.session_state.page == 2:
     for i in range(3):
         day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
         day_inputs.append(day_input)
-
-    if all(day_input.strip() != "" for day_input in day_inputs):  # Check if all fields are filled
-        if st.button("Next"):
-            st.session_state.user_data["day_inputs"][:3] = day_inputs
-            st.session_state.page = 3
-    else:
-        st.warning("Please fill out food names for all three days before proceeding.")
-
+    if st.button("Next"):
+        st.session_state.user_data["day_inputs"][:3] = day_inputs
+        st.session_state.page = 3
     if st.button("Back"):
         st.session_state.page = 1
 
@@ -130,14 +185,9 @@ elif st.session_state.page == 3:
     for i in range(3, 5):
         day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
         day_inputs.append(day_input)
-
-    if all(day_input.strip() != "" for day_input in day_inputs):  # Check if all fields are filled
-        if st.button("Next"):
-            st.session_state.user_data["day_inputs"][3:] = day_inputs
-            st.session_state.page = 4
-    else:
-        st.warning("Please fill out food names for both Day 4 and Day 5 before proceeding.")
-
+    if st.button("Next"):
+        st.session_state.user_data["day_inputs"][3:] = day_inputs
+        st.session_state.page = 4
     if st.button("Back"):
         st.session_state.page = 2
 
