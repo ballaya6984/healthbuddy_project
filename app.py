@@ -68,7 +68,7 @@ st.markdown(
         color: #4CAF50 !important;
     }
     .stButton>button {
-        background-color: #4CAF50;
+        background-color: #000080; /* Navy Blue */
         color: white;
         border: none;
         border-radius: 5px;
@@ -78,7 +78,7 @@ st.markdown(
         margin: 10px 5px;
     }
     .stButton>button:hover {
-        background-color: #45a049;
+        background-color: #003366; /* Darker Navy Blue for hover */
     }
     .result-card {
         background-color: #f4f4f4;
@@ -111,9 +111,14 @@ elif st.session_state.page == 2:
     for i in range(3):
         day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
         day_inputs.append(day_input)
-    if st.button("Next"):
-        st.session_state.user_data["day_inputs"][:3] = day_inputs
-        st.session_state.page = 3
+
+    if all(day_input.strip() != "" for day_input in day_inputs):  # Check if all fields are filled
+        if st.button("Next"):
+            st.session_state.user_data["day_inputs"][:3] = day_inputs
+            st.session_state.page = 3
+    else:
+        st.warning("Please fill out food names for all three days before proceeding.")
+
     if st.button("Back"):
         st.session_state.page = 1
 
@@ -125,9 +130,14 @@ elif st.session_state.page == 3:
     for i in range(3, 5):
         day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
         day_inputs.append(day_input)
-    if st.button("Next"):
-        st.session_state.user_data["day_inputs"][3:] = day_inputs
-        st.session_state.page = 4
+
+    if all(day_input.strip() != "" for day_input in day_inputs):  # Check if all fields are filled
+        if st.button("Next"):
+            st.session_state.user_data["day_inputs"][3:] = day_inputs
+            st.session_state.page = 4
+    else:
+        st.warning("Please fill out food names for both Day 4 and Day 5 before proceeding.")
+
     if st.button("Back"):
         st.session_state.page = 2
 
