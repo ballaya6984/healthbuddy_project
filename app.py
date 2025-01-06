@@ -64,20 +64,8 @@ st.markdown(
         margin: 20px auto;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
-    .title {
-        color: #4CAF50;
-        font-size: 32px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .subheader {
-        color: #555555;
-        font-size: 20px;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .input-container {
-        margin: 15px 0;
+    h1, h2, h3 {
+        color: #4CAF50 !important;
     }
     .stButton>button {
         background-color: #4CAF50;
@@ -106,41 +94,47 @@ st.markdown(
 
 # Page 1: Enter Name and Age
 if st.session_state.page == 1:
-    st.markdown("<h1 class='title'>HealthBuddy</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subheader'>Welcome! Let's get started.</p>", unsafe_allow_html=True)
-    st.text_input("Enter your name:", key="name", on_change=lambda: st.session_state.user_data.update({"name": st.session_state.name}))
-    st.text_input("Enter your age:", key="age", on_change=lambda: st.session_state.user_data.update({"age": st.session_state.age}))
+    st.markdown("<h1>HealthBuddy</h1>", unsafe_allow_html=True)
+    st.subheader("Welcome! Let's get started.")
+    name = st.text_input("Enter your name:")
+    age = st.text_input("Enter your age:")
     if st.button("Next"):
+        st.session_state.user_data["name"] = name
+        st.session_state.user_data["age"] = age
         st.session_state.page = 2
 
 # Page 2: Enter Food for Day 1, 2, and 3
 elif st.session_state.page == 2:
-    st.markdown("<h1 class='title'>Food Intake - Part 1</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subheader'>Enter food names for Day 1, Day 2, and Day 3</p>", unsafe_allow_html=True)
+    st.markdown("<h1>Food Intake - Part 1</h1>", unsafe_allow_html=True)
+    st.subheader("Enter food names for Day 1, Day 2, and Day 3")
+    day_inputs = []
     for i in range(3):
-        st.text_input(f"Day {i+1} Foods (comma-separated):", key=f"day_{i+1}_input",
-                      on_change=lambda i=i: st.session_state.user_data["day_inputs"].__setitem__(i, st.session_state[f"day_{i+1}_input"]))
+        day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
+        day_inputs.append(day_input)
     if st.button("Next"):
+        st.session_state.user_data["day_inputs"][:3] = day_inputs
         st.session_state.page = 3
     if st.button("Back"):
         st.session_state.page = 1
 
 # Page 3: Enter Food for Day 4 and 5
 elif st.session_state.page == 3:
-    st.markdown("<h1 class='title'>Food Intake - Part 2</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subheader'>Enter food names for Day 4 and Day 5</p>", unsafe_allow_html=True)
+    st.markdown("<h1>Food Intake - Part 2</h1>", unsafe_allow_html=True)
+    st.subheader("Enter food names for Day 4 and Day 5")
+    day_inputs = []
     for i in range(3, 5):
-        st.text_input(f"Day {i+1} Foods (comma-separated):", key=f"day_{i+1}_input",
-                      on_change=lambda i=i: st.session_state.user_data["day_inputs"].__setitem__(i, st.session_state[f"day_{i+1}_input"]))
+        day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
+        day_inputs.append(day_input)
     if st.button("Next"):
+        st.session_state.user_data["day_inputs"][3:] = day_inputs
         st.session_state.page = 4
     if st.button("Back"):
         st.session_state.page = 2
 
 # Page 4: Display Results
 elif st.session_state.page == 4:
-    st.markdown("<h1 class='title'>Results</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subheader'>Analyzing your vitamin deficiencies...</p>", unsafe_allow_html=True)
+    st.markdown("<h1>Results</h1>", unsafe_allow_html=True)
+    st.subheader("Analyzing your vitamin deficiencies...")
     
     # Analyze deficiencies
     deficiencies_count = Counter()
