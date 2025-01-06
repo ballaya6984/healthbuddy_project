@@ -42,78 +42,53 @@ health_disease_data = {
     # Add other vitamins as needed
 }
 
-# Streamlit app configuration
-st.set_page_config(page_title="HealthBuddy", layout="centered")
+# Initialize session state for page navigation and data storage
+if 'page' not in st.session_state:
+    st.session_state.page = 1
+if 'user_data' not in st.session_state:
+    st.session_state.user_data = {"name": "", "age": "", "day_inputs": [""] * 5}
 
-# Mobile-friendly CSS for card-based UI
-st.markdown("""
-    <style>
-    body {
-        background-color: #f8f9fa;
-        font-family: Arial, sans-serif;
-    }
-    .stApp {
-        padding: 0;
-        margin: 0;
-    }
-    .header {
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    .header h1 {
-        color: #007bff;
-        font-size: 36px;
-    }
-    .header h3 {
-        color: #333;
-        font-size: 18px;
-        margin-top: -10px;
-    }
-    .card {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        margin: 10px 0;
-    }
-    .card h4 {
-        color: #007bff;
-        margin-bottom: 10px;
-    }
-    .stButton button {
-        font-size: 16px;
-        width: 100%;
-        padding: 12px;
-        background-color: #007bff;
-        color: white;
-        border-radius: 5px;
-        border: none;
-    }
-    .stTextInput input {
-        font-size: 14px;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        width: 100%;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Page 1: Enter Name and Age
+if st.session_state.page == 1:
+    st.title("HealthBuddy")
+    st.subheader("Welcome! Let's get started.")
+    st.text_input("Enter your name:", key="name", on_change=lambda: st.session_state.user_data.update({"name": st.session_state.name}))
+    st.text_input("Enter your age:", key="age", on_change=lambda: st.session_state.user_data.update({"age": st.session_state.age}))
+    if st.button("Next"):
+        st.session_state.page = 2
 
-# App Header
-st.markdown("<div class='header'><h1>HealthBuddy</h1><h3>Vitamin Deficiency Tracker</h3></div>", unsafe_allow_html=True)
+# Page 2: Enter Food for Day 1, 2, and 3
+elif st.session_state.page == 2:
+    st.title("Food Intake - Part 1")
+    st.subheader("Enter food names for Day 1, Day 2, and Day 3")
+    for i in range(3):
+        st.text_input(f"Day {i+1} Foods (comma-separated):", key=f"day_{i+1}_input",
+                      on_change=lambda i=i: st.session_state.user_data["day_inputs"].__setitem__(i, st.session_state[f"day_{i+1}_input"]))
+    if st.button("Next"):
+        st.session_state.page = 3
+    if st.button("Back"):
+        st.session_state.page = 1
 
-# Input cards for each day
-st.markdown("<div class='card'><h4>Enter Food Intake</h4>", unsafe_allow_html=True)
-day_inputs = []
-for i in range(1, 6):
-    day_inputs.append(st.text_input(f"Day {i} Foods (comma-separated):", key=f"day_{i}_input"))
-st.markdown("</div>", unsafe_allow_html=True)
+# Page 3: Enter Food for Day 4 and 5
+elif st.session_state.page == 3:
+    st.title("Food Intake - Part 2")
+    st.subheader("Enter food names for Day 4 and Day 5")
+    for i in range(3, 5):
+        st.text_input(f"Day {i+1} Foods (comma-separated):", key=f"day_{i+1}_input",
+                      on_change=lambda i=i: st.session_state.user_data["day_inputs"].__setitem__(i, st.session_state[f"day_{i+1}_input"]))
+    if st.button("Next"):
+        st.session_state.page = 4
+    if st.button("Back"):
+        st.session_state.page = 2
 
-# Analysis function
-def analyze_all_days(day_inputs):
+# Page 4: Display Results
+elif st.session_state.page == 4:
+    st.title("Results")
+    st.subheader("Analyzing your vitamin deficiencies...")
+    
+    # Analyze deficiencies
     deficiencies_count = Counter()
-    for day_num, day_input in enumerate(day_inputs, 1):
+    for day_num, day_input in enumerate(st.session_state.user_data["day_inputs"], 1):
         food_names = [preprocess_text(food.strip()) for food in day_input.split(',') if food.strip()]
         if food_names:
             try:
@@ -127,21 +102,19 @@ def analyze_all_days(day_inputs):
                     if value < deficiency_thresholds.get(nutrient, float('inf'))
                 ]
                 deficiencies_count.update(deficiencies)
-    
-    # Display results
-    st.markdown("<div class='card'><h4>Results</h4>", unsafe_allow_html=True)
+
+    # Display deficiencies
     most_common_deficiencies = deficiencies_count.most_common(2)
     if most_common_deficiencies:
         for vitamin, _ in most_common_deficiencies:
-            st.markdown(f"<strong>{vitamin} Deficiency</strong>", unsafe_allow_html=True)
-            st.markdown(f"<strong>Diseases:</strong> {', '.join(health_disease_data[vitamin]['Diseases'])}", unsafe_allow_html=True)
-            st.markdown(f"<strong>Foods to Eat:</strong> {', '.join(health_disease_data[vitamin]['Foods to Eat'])}", unsafe_allow_html=True)
-            st.markdown(f"<strong>Precautions:</strong> {', '.join(health_disease_data[vitamin]['Precautions'])}", unsafe_allow_html=True)
-            st.markdown("<hr>", unsafe_allow_html=True)
+            st.markdown(f"### {vitamin} Deficiency")
+            st.markdown(f"**Diseases:** {', '.join(health_disease_data[vitamin]['Diseases'])}")
+            st.markdown(f"**Foods to Eat:** {', '.join(health_disease_data[vitamin]['Foods to Eat'])}")
+            st.markdown(f"**Precautions:** {', '.join(health_disease_data[vitamin]['Precautions'])}")
+            st.markdown("---")
     else:
-        st.markdown("No deficiencies detected.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# Analyze button
-if st.button("Analyze All Days"):
-    analyze_all_days(day_inputs)
+        st.write("No deficiencies detected.")
+    
+    if st.button("Restart"):
+        st.session_state.page = 1
+        st.session_state.user_data = {"name": "", "age": "", "day_inputs": [""] * 5}
