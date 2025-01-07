@@ -32,9 +32,95 @@ deficiency_thresholds = {
     'Vitamin_K': 2.0,
 }
 
-# Define health and disease data
+# Vitamin deficiency dataset
 health_disease_data = {
-    # Data remains unchanged
+    "Vitamin_A": {
+        "Diseases": ["Night blindness", "Dry skin", "Xerophthalmia"],
+        "Precautions": [
+            "Maintain good hygiene",
+            "Avoid smoking",
+            "Use vitamin-enriched skin products"
+        ],
+        "Foods to Eat": [
+            "Carrots",
+            "Sweet potatoes",
+            "Spinach",
+            "Apricots",
+            "Liver"
+        ]
+    },
+    "Vitamin_B12": {
+        "Diseases": ["Anemia", "Fatigue", "Nerve damage"],
+        "Precautions": [
+            "Regular check-ups",
+            "Avoid alcohol",
+            "Consider supplements if vegetarian"
+        ],
+        "Foods to Eat": [
+            "Meat",
+            "Fish",
+            "Eggs",
+            "Dairy products",
+            "Fortified cereals"
+        ]
+    },
+    "Vitamin_C": {
+        "Diseases": ["Scurvy", "Bleeding gums", "Weakened immunity"],
+        "Precautions": [
+            "Avoid smoking",
+            "Minimize stress",
+            "Eat fresh fruits and vegetables"
+        ],
+        "Foods to Eat": [
+            "Oranges",
+            "Strawberries",
+            "Bell peppers",
+            "Broccoli",
+            "Kiwi"
+        ]
+    },
+    "Vitamin_D": {
+        "Diseases": ["Rickets", "Bone pain", "Muscle weakness"],
+        "Precautions": [
+            "Get sunlight exposure",
+            "Maintain calcium levels",
+            "Take supplements if needed"
+        ],
+        "Foods to Eat": [
+            "Fatty fish",
+            "Fortified milk",
+            "Eggs",
+            "Mushrooms"
+        ]
+    },
+    "Vitamin_E": {
+        "Diseases": ["Nerve damage", "Muscle weakness", "Vision issues"],
+        "Precautions": [
+            "Avoid excessive fat restriction",
+            "Include antioxidants in diet"
+        ],
+        "Foods to Eat": [
+            "Nuts",
+            "Seeds",
+            "Spinach",
+            "Sunflower oil",
+            "Avocados"
+        ]
+    },
+    "Vitamin_K": {
+        "Diseases": ["Bleeding disorders", "Weak bones"],
+        "Precautions": [
+            "Avoid prolonged use of antibiotics",
+            "Ensure a balanced diet"
+        ],
+        "Foods to Eat": [
+            "Leafy greens",
+            "Broccoli",
+            "Brussels sprouts",
+            "Parsley",
+            "Fish oil"
+        ]
+    },
 }
 
 # Initialize session state
@@ -47,80 +133,21 @@ if 'user_data' not in st.session_state:
 st.markdown(
     """
     <style>
-    /* CSS code remains unchanged */
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+    h1, h2, h3 {
+        color: #4CAF50;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Page 1: Enter Name and Age
-if st.session_state.page == 1:
-    st.markdown("<h1>HealthBuddy</h1>", unsafe_allow_html=True)
-    st.subheader("Welcome! Let's get started.")
-    name = st.text_input("Enter your name:")
-    age = st.text_input("Enter your age:")
-    if st.button("Next"):
-        if not name.strip() or not age.strip():
-            st.error("Please enter both your name and age before proceeding.")
-        else:
-            st.session_state.user_data["name"] = name
-            st.session_state.user_data["age"] = age
-            st.session_state.page = 2
-
-# Page 2: Enter Food for Day 1, 2, and 3
-elif st.session_state.page == 2:
-    st.markdown("<h1>Food Intake - Part 1</h1>", unsafe_allow_html=True)
-    st.subheader("Enter food names for Day 1, Day 2, and Day 3")
-    day_inputs = []
-    incomplete_inputs = False
-
-    for i in range(3):
-        day_input = st.text_area(f"Day {i+1} Foods (comma-separated):", key=f"day{i+1}")
-        day_inputs.append(day_input)
-        if not day_input.strip():  # Check if input is empty
-            incomplete_inputs = True
-
-    if st.button("Next"):
-        if incomplete_inputs:
-            st.error("Please fill out all food entries for Days 1, 2, and 3 before proceeding.")
-        else:
-            st.session_state.user_data["day_inputs"][:3] = day_inputs
-            st.session_state.page = 3
-
-    if st.button("Back"):
-        st.session_state.page = 1
-
-# Page 3: Enter Food for Day 4 and 5
-elif st.session_state.page == 3:
-    st.markdown("<h1>Food Intake - Part 2</h1>", unsafe_allow_html=True)
-    st.subheader("Enter food names for Day 4 and Day 5")
-    day_inputs = []
-    incomplete_inputs = False
-
-    for i in range(3, 5):
-        day_input = st.text_area(f"Day {i+1} Foods (comma-separated):", key=f"day{i+1}")
-        day_inputs.append(day_input)
-        if not day_input.strip():  # Check if input is empty
-            incomplete_inputs = True
-
-    if st.button("Next"):
-        if incomplete_inputs:
-            st.error("Please fill out all food entries for Days 4 and 5 before proceeding.")
-        else:
-            st.session_state.user_data["day_inputs"][3:] = day_inputs
-            st.session_state.page = 4
-
-    if st.button("Back"):
-        st.session_state.page = 2
-
-# Page 4: Display Results
-elif st.session_state.page == 4:
-    st.markdown("<h1>Results</h1>", unsafe_allow_html=True)
-    st.subheader("Analyzing your vitamin deficiencies...")
-    
-    # Analyze deficiencies
+# Analyze deficiencies
+def analyze_deficiencies(day_inputs):
     deficiencies_count = Counter()
-    for day_num, day_input in enumerate(st.session_state.user_data["day_inputs"], 1):
+    for day_input in day_inputs:
         food_names = [preprocess_text(food.strip()) for food in day_input.split(',') if food.strip()]
         if food_names:
             try:
@@ -134,19 +161,41 @@ elif st.session_state.page == 4:
                     if value < deficiency_thresholds.get(nutrient, float('inf'))
                 ]
                 deficiencies_count.update(deficiencies)
+    return deficiencies_count
 
-    # Display deficiencies
-    most_common_deficiencies = deficiencies_count.most_common(2)
-    if most_common_deficiencies:
-        for vitamin, _ in most_common_deficiencies:
-            st.markdown(f"<div class='result-card'><h3>{vitamin} Deficiency</h3>"
-                        f"<p><b>Diseases:</b> {', '.join(health_disease_data[vitamin]['Diseases'])}</p>"
-                        f"<p><b>Foods to Eat:</b> {', '.join(health_disease_data[vitamin]['Foods to Eat'])}</p>"
-                        f"<p><b>Precautions:</b> {', '.join(health_disease_data[vitamin]['Precautions'])}</p></div>",
-                        unsafe_allow_html=True)
+# App logic
+st.title("Health Buddy: Vitamin Deficiency Tracker Praveen")
+
+if st.session_state.page == 1:
+    st.header("Welcome to Health Buddy!")
+    st.subheader("Track your vitamin intake and get personalized tips!")
+    st.text_input("Name:", key="user_name")
+    st.text_input("Age:", key="user_age")
+    if st.button("Next"):
+        st.session_state.page = 2
+
+elif st.session_state.page == 2:
+    st.header("Enter your daily food intake")
+    for i in range(5):
+        st.text_area(f"Day {i+1} Intake:", key=f"day_{i+1}")
+    if st.button("Analyze"):
+        st.session_state.user_data["day_inputs"] = [
+            st.session_state.get(f"day_{i+1}", "") for i in range(5)
+        ]
+        st.session_state.page = 3
+
+elif st.session_state.page == 3:
+    st.header("Analysis Results")
+    day_inputs = st.session_state.user_data["day_inputs"]
+    deficiencies_count = analyze_deficiencies(day_inputs)
+    if deficiencies_count:
+        for vitamin, count in deficiencies_count.items():
+            st.subheader(f"{vitamin} Deficiency")
+            st.write("Diseases:", ", ".join(health_disease_data[vitamin]["Diseases"]))
+            st.write("Precautions:", ", ".join(health_disease_data[vitamin]["Precautions"]))
+            st.write("Foods to Eat:", ", ".join(health_disease_data[vitamin]["Foods to Eat"]))
     else:
-        st.markdown("<p class='result-card'>No deficiencies detected.</p>", unsafe_allow_html=True)
-    
+        st.write("No significant deficiencies detected.")
     if st.button("Restart"):
         st.session_state.page = 1
-        st.session_state.user_data = {"name": "", "age": "", "day_inputs": [""] * 5}
+
