@@ -127,64 +127,104 @@ health_disease_data = {
 if 'page' not in st.session_state:
     st.session_state.page = 1
 if 'user_data' not in st.session_state:
-    st.session_state.user_data = {
-        "name": "",
-        "age": "",
-        "gender": "",
-        "day_inputs": ["", "", "", "", ""]
+    st.session_state.user_data = {"name": "", "age": "", "gender": "", "day_inputs": ["", "", "", "", ""]}
+
+# Custom CSS for styling
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #f9f9f9;
+        color: #333333;
+        font-family: 'Arial', sans-serif;
     }
+    .stApp {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+        color: #2e8b57 !important; /* Navy Green color */
+    }
+    .stButton>button {
+        background-color: #000080; /* Navy Blue */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 10px 5px;
+    }
+    .stButton>button:hover {
+        background-color: #003366; /* Darker Navy Blue for hover */
+    }
+    .result-card {
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Page 1: Enter Name, Age, and Gender
 if st.session_state.page == 1:
-    st.title("HealthBuddy")
-    st.subheader("Welcome! Let's start with your details.")
+    st.markdown("<h1>HealthBuddy by Praveen</h1>", unsafe_allow_html=True)
+    st.subheader("Welcome! Let's get started.")
     name = st.text_input("Enter your name:")
     age = st.text_input("Enter your age:")
     gender = st.selectbox("Select your gender:", ["", "Male", "Female", "Other"])
-
     if st.button("Next"):
-        st.session_state.user_data["name"] = name
-        st.session_state.user_data["age"] = age
-        st.session_state.user_data["gender"] = gender
-        st.session_state.page = 2
+        if name and age and gender:
+            st.session_state.user_data["name"] = name
+            st.session_state.user_data["age"] = age
+            st.session_state.user_data["gender"] = gender
+            st.session_state.page = 2
+        else:
+            st.warning("Please fill in all fields before proceeding.")
 
-# Page 2: Enter Food for Days 1, 2, and 3
+# Page 2: Enter Food for Day 1, 2, and 3
 elif st.session_state.page == 2:
-    st.title("Food Intake - Part 1")
+    st.markdown("<h1>Food Intake - Part 1</h1>", unsafe_allow_html=True)
     st.subheader("Enter food names for Day 1, Day 2, and Day 3")
-    day_inputs = []
+    completed = True
     for i in range(3):
-        day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
-        day_inputs.append(day_input)
-    
+        st.session_state.user_data["day_inputs"][i] = st.text_area(f"Day {i + 1} Foods (comma-separated):", value=st.session_state.user_data["day_inputs"][i])
+        if not st.session_state.user_data["day_inputs"][i].strip():
+            completed = False
     if st.button("Next"):
-        st.session_state.user_data["day_inputs"][:3] = day_inputs
-        st.session_state.page = 3
+        if completed:
+            st.session_state.page = 3
+        else:
+            st.warning("Please fill in food entries for all days before proceeding.")
 
-    if st.button("Back"):
-        st.session_state.page = 1
-
-# Page 3: Enter Food for Days 4 and 5
+# Page 3: Enter Food for Day 4 and 5
 elif st.session_state.page == 3:
-    st.title("Food Intake - Part 2")
+    st.markdown("<h1>Food Intake - Part 2</h1>", unsafe_allow_html=True)
     st.subheader("Enter food names for Day 4 and Day 5")
-    day_inputs = []
+    completed = True
     for i in range(3, 5):
-        day_input = st.text_area(f"Day {i+1} Foods (comma-separated):")
-        day_inputs.append(day_input)
-    
+        st.session_state.user_data["day_inputs"][i] = st.text_area(f"Day {i + 1} Foods (comma-separated):", value=st.session_state.user_data["day_inputs"][i])
+        if not st.session_state.user_data["day_inputs"][i].strip():
+            completed = False
     if st.button("Next"):
-        st.session_state.user_data["day_inputs"][3:] = day_inputs
-        st.session_state.page = 4
-
-    if st.button("Back"):
-        st.session_state.page = 2
+        if completed:
+            st.session_state.page = 4
+        else:
+            st.warning("Please fill in food entries for all days before proceeding.")
 
 # Page 4: Display Results
 elif st.session_state.page == 4:
-    st.title("Results")
+    st.markdown("<h1>Results</h1>", unsafe_allow_html=True)
     st.subheader("Analyzing your vitamin deficiencies...")
 
+    # Analyze deficiencies
     deficiencies_count = Counter()
     for day_num, day_input in enumerate(st.session_state.user_data["day_inputs"], 1):
         food_names = [preprocess_text(food.strip()) for food in day_input.split(',') if food.strip()]
@@ -193,7 +233,6 @@ elif st.session_state.page == 4:
                 predictions = model.predict(food_names)
             except:
                 predictions = [[0.0] * len(target_names)] * len(food_names)
-
             for i, food in enumerate(food_names):
                 food_predictions = dict(zip(target_names, predictions[i]))
                 deficiencies = [
@@ -202,21 +241,18 @@ elif st.session_state.page == 4:
                 ]
                 deficiencies_count.update(deficiencies)
 
+    # Display deficiencies
     most_common_deficiencies = deficiencies_count.most_common(2)
     if most_common_deficiencies:
         for vitamin, _ in most_common_deficiencies:
-            st.markdown(f"**{vitamin} Deficiency**")
-            st.write(f"Diseases: {', '.join(health_disease_data[vitamin]['Diseases'])}")
-            st.write(f"Foods to Eat: {', '.join(health_disease_data[vitamin]['Foods to Eat'])}")
-            st.write(f"Precautions: {', '.join(health_disease_data[vitamin]['Precautions'])}")
+            st.markdown(f"<div class='result-card'><h3>{vitamin} Deficiency</h3>"
+                        f"<p><b>Diseases:</b> {', '.join(health_disease_data[vitamin]['Diseases'])}</p>"
+                        f"<p><b>Foods to Eat:</b> {', '.join(health_disease_data[vitamin]['Foods to Eat'])}</p>"
+                        f"<p><b>Precautions:</b> {', '.join(health_disease_data[vitamin]['Precautions'])}</p></div>",
+                        unsafe_allow_html=True)
     else:
-        st.write("No deficiencies detected.")
+        st.markdown("<p class='result-card'>No deficiencies detected.</p>", unsafe_allow_html=True)
 
     if st.button("Restart"):
         st.session_state.page = 1
-        st.session_state.user_data = {
-            "name": "",
-            "age": "",
-            "gender": "",
-            "day_inputs": ["", "", "", "", ""]
-        }
+        st.session_state.user_data = {"name": "", "age": "", "gender": "", "day_inputs": ["", "", "", "", ""]}
