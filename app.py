@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 import joblib
@@ -126,8 +125,8 @@ health_disease_data = {
 # Initialize session state
 if 'page' not in st.session_state:
     st.session_state.page = 1
-if 'user_data' not in st.session_state:
-    st.session_state.user_data = {"name": "", "age": "", "day_inputs": [""] * 5}
+if 'day_inputs' not in st.session_state:
+    st.session_state.day_inputs = [""] * 5
 
 # Custom CSS for styling
 st.markdown(
@@ -164,30 +163,29 @@ def analyze_deficiencies(day_inputs):
     return deficiencies_count
 
 # App logic
-st.title("Health Buddy: Vitamin Deficiency Tracker Praveen")
+st.title("Health Buddy: Vitamin Deficiency Tracker")
 
 if st.session_state.page == 1:
-    st.header("Welcome to Health Buddy!")
-    st.subheader("Track your vitamin intake and get personalized tips!")
-    st.text_input("Name:", key="user_name")
-    st.text_input("Age:", key="user_age")
+    st.header("Enter your daily food intake: Days 1 to 3")
+    for i in range(3):
+        st.text_area(f"Day {i+1} Intake:", key=f"day_{i+1}")
     if st.button("Next"):
+        for i in range(3):
+            st.session_state.day_inputs[i] = st.session_state.get(f"day_{i+1}", "")
         st.session_state.page = 2
 
 elif st.session_state.page == 2:
-    st.header("Enter your daily food intake")
-    for i in range(5):
+    st.header("Enter your daily food intake: Days 4 and 5")
+    for i in range(3, 5):
         st.text_area(f"Day {i+1} Intake:", key=f"day_{i+1}")
     if st.button("Analyze"):
-        st.session_state.user_data["day_inputs"] = [
-            st.session_state.get(f"day_{i+1}", "") for i in range(5)
-        ]
+        for i in range(3, 5):
+            st.session_state.day_inputs[i] = st.session_state.get(f"day_{i+1}", "")
         st.session_state.page = 3
 
 elif st.session_state.page == 3:
     st.header("Analysis Results")
-    day_inputs = st.session_state.user_data["day_inputs"]
-    deficiencies_count = analyze_deficiencies(day_inputs)
+    deficiencies_count = analyze_deficiencies(st.session_state.day_inputs)
     if deficiencies_count:
         for vitamin, count in deficiencies_count.items():
             st.subheader(f"{vitamin} Deficiency")
@@ -198,4 +196,3 @@ elif st.session_state.page == 3:
         st.write("No significant deficiencies detected.")
     if st.button("Restart"):
         st.session_state.page = 1
-
