@@ -177,9 +177,9 @@ st.markdown(
 if st.session_state.page == 1:
     st.markdown("<h1>HealthBuddy by Praveen</h1>", unsafe_allow_html=True)
     st.subheader("Welcome! Let's get started.")
-    name = st.text_input("Enter your name:")
-    age = st.text_input("Enter your age:")
-    gender = st.selectbox("Select your gender:", ["", "Male", "Female", "Other"])
+    name = st.text_input("Enter your name:", value=st.session_state.user_data["name"])
+    age = st.text_input("Enter your age:", value=st.session_state.user_data["age"])
+    gender = st.selectbox("Select your gender:", ["", "Male", "Female", "Other"], index=["", "Male", "Female", "Other"].index(st.session_state.user_data["gender"]) if st.session_state.user_data["gender"] else 0)
     if st.button("Next"):
         if name and age and gender:
             st.session_state.user_data["name"] = name
