@@ -153,12 +153,10 @@ if st.button("Analyze"):
         most_common_deficiencies = deficiencies_count.most_common(2)
         if most_common_deficiencies:
             for vitamin, _ in most_common_deficiencies:
-                st.markdown(f"<div style='background-color: #f9f9f9; border-radius: 10px; padding: 10px; margin: 10px 0;'>"
-                            f"<h3 style='color: #2e8b57;'>{vitamin} Deficiency</h3>"
-                            f"<p><b>Diseases:</b> {', '.join(health_disease_data[vitamin]['Diseases'])}</p>"
-                            f"<p><b>Foods to Eat:</b> {', '.join(health_disease_data[vitamin]['Foods to Eat'])}</p>"
-                            f"<p><b>Precautions:</b> {', '.join(health_disease_data[vitamin]['Precautions'])}</p></div>",
-                            unsafe_allow_html=True)
+                st.markdown(f"**{vitamin} Deficiency**")
+                st.write(f"Diseases: {', '.join(health_disease_data[vitamin]['Diseases'])}")
+                st.write(f"Foods to Eat: {', '.join(health_disease_data[vitamin]['Foods to Eat'])}")
+                st.write(f"Precautions: {', '.join(health_disease_data[vitamin]['Precautions'])}")
         else:
             st.success("No deficiencies detected. Keep up the good diet!")
     else:
