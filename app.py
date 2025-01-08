@@ -127,37 +127,42 @@ health_disease_data = {
 st.title("HealthBuddy by Praveen")
 st.subheader("Analyze your vitamin intake")
 
-# Input for 5 days of food
-foods_input = st.text_area("Enter food items for the past 5 days (comma-separated):")
+# Inputs for 5 days of food
+food_inputs = []
+for i in range(1, 6):
+    food_input = st.text_input(f"Enter food items for Day {i} (comma-separated):")
+    food_inputs.append(food_input)
 
 if st.button("Analyze"):
-    if foods_input.strip():
-        food_names = [preprocess_text(food.strip()) for food in foods_input.split(',') if food.strip()]
-        deficiencies_count = Counter()
+    deficiencies_count = Counter()
 
-        if food_names:
-            try:
-                predictions = model.predict(food_names)
-            except:
-                predictions = [[0.0] * len(target_names)] * len(food_names)
+    for day, foods_input in enumerate(food_inputs, 1):
+        if foods_input.strip():
+            food_names = [preprocess_text(food.strip()) for food in foods_input.split(',') if food.strip()]
 
-            for i, food in enumerate(food_names):
-                food_predictions = dict(zip(target_names, predictions[i]))
-                deficiencies = [
-                    nutrient for nutrient, value in food_predictions.items()
-                    if value < deficiency_thresholds.get(nutrient, float('inf'))
-                ]
-                deficiencies_count.update(deficiencies)
+            if food_names:
+                try:
+                    predictions = model.predict(food_names)
+                except:
+                    predictions = [[0.0] * len(target_names)] * len(food_names)
 
-        # Display deficiencies
-        most_common_deficiencies = deficiencies_count.most_common(2)
-        if most_common_deficiencies:
-            for vitamin, _ in most_common_deficiencies:
-                st.markdown(f"**{vitamin} Deficiency**")
-                st.write(f"Diseases: {', '.join(health_disease_data[vitamin]['Diseases'])}")
-                st.write(f"Foods to Eat: {', '.join(health_disease_data[vitamin]['Foods to Eat'])}")
-                st.write(f"Precautions: {', '.join(health_disease_data[vitamin]['Precautions'])}")
-        else:
-            st.success("No deficiencies detected. Keep up the good diet!")
+                for i, food in enumerate(food_names):
+                    food_predictions = dict(zip(target_names, predictions[i]))
+                    deficiencies = [
+                        nutrient for nutrient, value in food_predictions.items()
+                        if value < deficiency_thresholds.get(nutrient, float('inf'))
+                    ]
+                    deficiencies_count.update(deficiencies)
+
+    # Display deficiencies
+    most_common_deficiencies = deficiencies_count.most_common(2)
+    if most_common_deficiencies:
+        for vitamin, _ in most_common_deficiencies:
+            st.markdown(f"**{vitamin} Deficiency**")
+            st.write(f"Diseases: {', '.join(health_disease_data[vitamin]['Diseases'])}")
+            st.write(f"Foods to Eat: {', '.join(health_disease_data[vitamin]['Foods to Eat'])}")
+            st.write(f"Precautions: {', '.join(health_disease_data[vitamin]['Precautions'])}")
     else:
-        st.warning("Please enter some food items to analyze.")
+        st.success("No deficiencies detected. Keep up the good diet!")
+else:
+    st.warning("Please enter food items for all days before analyzing.")
