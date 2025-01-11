@@ -5,7 +5,6 @@ from nltk.corpus import stopwords
 import joblib
 from collections import Counter
 
-
 # Download stopwords
 nltk.download('stopwords')
 
@@ -256,4 +255,4 @@ elif st.session_state.page == 4:
 
     if st.button("Restart"):
         st.session_state.page = 1
-        st.session_state.user_data = {"name": "", "age": "", "gender": "", "day_inputs": ["", "", "", "", ""]}
+        st.session_state.user_data = {"name": "", "age": "", "gender": "", "day_inputs": ["", "", "", "", ""]}
